@@ -55,6 +55,7 @@ a{color:var(--accent)}
 .label{display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--c);color:var(--bg);padding:6px 30px 6px 12px;font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
 .body{padding:16px 16px 18px;display:flex;flex-direction:column;gap:10px;flex:1;min-width:0}
 .shot{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;object-position:top;border-bottom:1px solid var(--line);background:var(--bg)}
+.shotframe{position:relative;aspect-ratio:16/9;overflow:hidden;border-bottom:1px solid var(--line);background:var(--bg) center/cover no-repeat}.shotframe iframe{position:absolute;top:0;left:0;width:400%;height:400%;border:0;transform:scale(.25);transform-origin:0 0;pointer-events:none;background:#fff}
 .shotprev{width:160px;max-width:100%;aspect-ratio:16/9;object-fit:cover;border:1px solid var(--line)}
 .cart h3{font-family:var(--f-display);font-size:22px;line-height:1.1;margin:0;text-wrap:balance}
 .summary{margin:0;color:var(--muted);overflow-wrap:anywhere}
@@ -132,7 +133,7 @@ function socials(pr){
 
 const IMG_OK=/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+\/=]+$/;
 function safeImg(u){u=String(u||"");return (u.length<=1200000&&IMG_OK.test(u))?u:""}
-function shotHtml(p){const u=safeImg(p.img);return u?`<img class="shot" src="${u}" alt="${esc(p.imgAlt||("Screenshot of "+p.title))}" loading="lazy">`:""}
+function shotHtml(p){const site=safeUrl(p.site);if(site&&!isSport(p)){const u0=safeImg(p.img);return `<div class="shotframe"${u0?` style="background-image:url(${u0})"`:""}><iframe src="${esc(site)}" title="Live preview of ${esc(p.title)}" loading="lazy" tabindex="-1" aria-hidden="true" sandbox="allow-scripts allow-same-origin" referrerpolicy="no-referrer"></iframe></div>`}const u=safeImg(p.img);return u?`<img class="shot" src="${u}" alt="${esc(p.imgAlt||("Screenshot of "+p.title))}" loading="lazy">`:""}
 // Shrinks a picked image so the page stays small: at most 1280 px wide, saved as JPEG.
 async function fileToShot(file){
   const bmp=await createImageBitmap(file);
